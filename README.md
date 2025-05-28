@@ -1,4 +1,4 @@
-Директория, где буду хранить все решения задач с codeforces/leetcode
+Dirictory where i store my or best solutions for codeforces/leetcode problems
 
 ## Contests:
 Codeforces Round 1027 div. 3: 376(+376). First contest ever
