@@ -65,6 +65,7 @@ void merge(int list[],int start, int end, int mid)
 	*/
 	while(i <= mid)
 	{
+		mergedList[k] = list[i];
 		k++;
 		i++;
 	}
