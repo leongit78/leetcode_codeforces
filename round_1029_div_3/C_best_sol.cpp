@@ -1,48 +1,69 @@
-// TODO: understand how this works
 #include <bits/stdc++.h>
 
 using namespace std;
 
-#define sp ' '
 #define nl '\n'
-#define IOS ios_base::sync_with_stdio(false); cin.tie(nullptr)
-#define all(a) a.begin(), a.end()
+#define sp ' '
 
-void solve() {
+
+void solve()
+{
     int n;
     cin >> n;
-    vector<int> v(n);
-    vector<int> distinct(n), freq(n + 1);
+    vector<int> v(n); // mas for numbers 
+    vector<int> distinct(n); // на i-ой позиции находится кол-во уникальных элементов в промежутке [0, ... ,i]
+    vector<int> freq(n+1); // на i-ой позиции расположено кол-во вхождений числа i в исходный массив v
+
+
+    // Тестовый массив 
+    // 1 2 2 3 1 5
     
-    int total = 0;
-    for(int i = 0; i < n; i++) {
+
+    // Состояние массивов freq и distinct на момент i == n
+
+    // freq =     [0,2,2,1,0,1,0]
+    // distinct = [1,2,2,3,3,4]
+
+
+    // Конструируем массив distinct(он дальше поднадобится)
+    for(int i = 0; i < n; i++)
+    {
         cin >> v[i];
         freq[v[i]]++;
-        if(freq[v[i]] == 1) distinct[i] = 1;
-        distinct[i] += (i ? distinct[i - 1] : 0);
+        if(freq[v[i]] == 1) distinct[i] = 1; // Если текущее число раньше не встречалось то для текущей позиции d_i = 1, иначе distinct[i] = 0
+        distinct[i] += (i ? distinct[i-1] : 0); // начиная с 1-го индекса переносим прошлое кол-во уникальных элементов с предыдущей позиции(таким образом d_i >= d_i-1). Изначально distinct[i] = 0, но если появляется новый уникальный элемент, то строчкой выше мы заносим в distinct[i] значение 1 -> на i-ой позиции уникальных элементов из пром-тка [0, ... ,i] становится на один больше
     }
-
+    
+    // Зануляем массив freq
     fill(freq.begin(), freq.end(), 0);
 
-    int ans = 0, end = n - 1;
-    total = 0;
-    for(int i = n - 1; i >= 0; i--) {
+    
+    int ans = 0; // переменная для итогового максимального числа отрезков - ответ
+    int end = n - 1; // Переменная нужная для отслеживания нужного на i-ой итерации кол-ва уникальных чисел(это кол-во находится в distinct[end])
+
+    int total = 0; // Переменная нужная для подсчета кол-ва уникальных элементов на i-ой итерации 
+
+    for(int i = n - 1; i >= 0; i--) // идем с конца, пока не наберем все уникальные элементы исходного массива(т.к. последний отрезок должен их все содержать)
+    {
         freq[v[i]]++;
-        if(freq[v[i]] == 1) total++;
-        
-        if(total == distinct[end]) {
-            ans++;
-            for(int j = i; j <= end; j++) freq[v[j]] = 0;
-            end = i - 1;
-            total = 0;
+        if(freq[v[i]] == 1) total++; // Тот же принцип, что и ранее, если элемент встречается впервые, считаем его как новый уникальный, остальные его вхождения игнорируются 
+
+        // Если необходимое кол-во уникальных элементов пройдено
+        if(total == distinct[end])
+        {
+            ans++; // отрезок найден
+            for(int j = i; j <= end; j++) freq[v[j]] = 0; // обнуляем счетчики вхождений всех тех элементов, которых прошли 
+            end = i - 1; // Обновляем end -> теперь в distinct[end] находится кол-во уникальных элементов, которые мы еще не прошли
+            total = 0; // обнуляем счетчик уникальных элементов 
         }
     }
 
-    cout << ans << endl;
+    cout << ans << nl;
 }
 
-int main() {
-    int t;
-    cin >> t;
+int main()
+{
+    int t; cin >> t;
     while(t--) solve();
+    return 0;
 }
